@@ -1,0 +1,63 @@
+.. _index:
+
+============
+Plugin bluez
+============
+
+Purpose
+=======
+
+The bluez plugin is used to check if some bluetooth devices (smartphone for examples) are around Domogik server. You can use this information to check who is at home for example.
+
+Dependencies
+============
+
+You need to install the **pybluez** library: ::
+
+    $ sudo pip install pybluez
+
+
+Plugin configuration
+====================
+
+===================== =========================== ===============================================================================
+Key                   Type                        Description
+===================== =========================== ===============================================================================
+scan-delay            integer                     The delay between 2 bluetooth scans in seconds
+--------------------- --------------------------- -------------------------------------------------------------------------------
+error-delay           integer                     The delay to wait when an error occurs with the bluetooth adaptator in seconds
+--------------------- --------------------------- -------------------------------------------------------------------------------
+hysteresis            integer                     The number of negative scans before sending a low trig
+===================== =========================== ===============================================================================
+
+Create the domogik devices
+==========================
+
+Domogik device type : bluez.found
+---------------------------------
+
+1 parameter is needed for a domogik device creation:
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+device                string                      The mac address of a bluetooth device.
+===================== =========================== ======================================================================
+
+To find a device mac address :
+
+* you can go in the **advanced** menu of the plugin in Domogik administration. The page will take a few seconds to load and then will display the result of the **hcitool scan** command on your server. This command checks for visible bluetooth devices around.
+* you can also use directly the ``hcitool scan`` command in a command line shell.
+
+Please notice that some devices, for example some Android smartphones, are hiding from non paired devices. So you may not see these bluetooth devices. To allow them to be seen, please configure them to be visible.
+
+Start the plugin
+================
+
+You can now start the plugin (start button) and use the created domogik devices.
+
+Set up your widgets on the user interface
+=========================================
+
+You can now place the widgets of your devices features on the user interface.
+

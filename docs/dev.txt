@@ -1,0 +1,33 @@
+========================
+Development informations
+========================
+
+xPL messages
+============
+
+xpl-stat
+--------
+
+The **sensor.basic** message is used: ::
+
+    xpl-stat
+    {
+    ...
+    }
+    sensor.basic
+    {
+    type=bluez
+    device=<device mac address>
+    current=<value>
+    }
+
+xpl-trig
+--------
+
+n/a
+
+xpl-cmnd
+--------
+
+n/a
+
