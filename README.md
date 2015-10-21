@@ -1,0 +1,1 @@
+# domogik-plugin-sonos
