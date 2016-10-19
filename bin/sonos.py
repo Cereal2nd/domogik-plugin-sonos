@@ -71,7 +71,7 @@ class Sonos(Plugin):
 		elif typ == "play":
 		    dev.play()
 		elif typ == "pause":
-		    dev.pause)
+		    dev.pause()
 		elif typ == "stop":
 		    dev.stop()
 		elif typ == "next":
