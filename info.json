@@ -6,12 +6,12 @@
             "description": "Sonos Player",
             "name": "Player",
             "commands": ["play", "stop", "mute", "volup", "voldown"],
-            "sensors": ["stat"],
+            "sensors": [],
             "parameters": [
                 {
                     "key": "device",
-                    "xpl": true,
-                    "description": "The ip of the device",
+                    "xpl": false,
+                    "description": "The Sonos name of the device",
                     "type": "string"
                 }
             ]
@@ -39,8 +39,18 @@
                     "data_type" : "DT_Trigger",
                     "conversion" : ""
                 }
-           ],
-           "xpl_command": "xpl_play"
+           ]
+        },
+        "pause": {
+           "name": "Send pause",
+           "return_confirmation": true,
+           "parameters": [
+                {
+                    "key" : "current",
+                    "data_type" : "DT_Trigger",
+                    "conversion" : ""
+                }
+           ]
         },
         "stop": {
            "name": "Send stop",
@@ -51,10 +61,30 @@
                     "data_type" : "DT_Trigger",
                     "conversion" : ""
                 }
-           ],
-           "xpl_command": "xpl_stop"
+           ]
         },
-
+        "next": {
+           "name": "Send next",
+           "return_confirmation": true,
+           "parameters": [
+                {
+                    "key" : "current",
+                    "data_type" : "DT_Trigger",
+                    "conversion" : ""
+                }
+           ]
+        },
+        "previous": {
+           "name": "Send previous",
+           "return_confirmation": true,
+           "parameters": [
+                {
+                    "key" : "current",
+                    "data_type" : "DT_Trigger",
+                    "conversion" : ""
+                }
+           ]
+        },
         "voldown": {
            "name": "Send vol down",
            "return_confirmation": true,
@@ -64,8 +94,7 @@
                     "data_type" : "DT_Trigger",
                     "conversion" : ""
                 }
-           ],
-           "xpl_command": "xpl_voldown"
+           ]
         },
         "volup": {
            "name": "Send vol up",
@@ -76,8 +105,7 @@
                     "data_type" : "DT_Trigger",
                     "conversion" : ""
                 }
-           ],
-           "xpl_command": "xpl_volup"
+           ]
         },
         "mute": {
            "name": "Toggle mute",
@@ -88,118 +116,10 @@
                     "data_type" : "DT_Trigger",
                     "conversion" : ""
                 }
-           ],
-           "xpl_command": "xpl_mute"
+           ]
         } 
     },
-    "xpl_commands": {
-         "xpl_play": {
-            "name": "Play",
-            "schema": "control.basic",
-            "xplstat_name": "stat",
-            "parameters": {
-                "static": [
-                    {
-                         "key": "type",
-                         "value": "play"
-                    }                
-                ],
-                "device": []
-            }
-         },
-         "xpl_stop": {
-            "name": "Stop",
-            "schema": "control.basic",
-            "xplstat_name": "stat",
-            "parameters": {
-                "static": [
-                    {
-                         "key": "type",
-                         "value": "stop"
-                    }                
-                ],
-                "device": []
-            }
-         },
-         "xpl_mute": {
-            "name": "Mute",
-            "schema": "control.basic",
-            "xplstat_name": "stat",
-            "parameters": {
-                "static": [
-                    {
-                         "key": "type",
-                         "value": "mute"
-                    }                
-                ],
-                "device": []
-            }
-         },
-         "xpl_voldown": {
-            "name": "Volume down",
-            "schema": "control.basic",
-            "xplstat_name": "stat",
-            "parameters": {
-                "static": [
-                    {
-                         "key": "type",
-                         "value": "voldown"
-                    }                
-                ],
-                "device": []
-            }
-         },
-         "xpl_volup": {
-            "name": "Volume up",
-            "schema": "control.basic",
-            "xplstat_name": "stat",
-            "parameters": {
-                "static": [
-                    {
-                         "key": "type",
-                         "value": "volup"
-                    }                
-                ],
-                "device": []
-            }
-         }
-    },
-    "xpl_stats": {
-       "stat": {
-            "name": "stat",
-            "schema": "sensor.basic",
-            "parameters": {
-                "static": [
-                    {
-                         "key": "type",
-                         "value": "sonos.player"
-                    }                
-                ],
-                "device": [],
-                "dynamic": [
-                    {
-                         "key": "current",
-                         "sensor": "stat",
-                         "ignore_values": ""
-                    }
-                ]
-            }
-       } 
-    },
-    "sensors": {
-        "stat": {
-            "name": "stat",
-            "data_type": "DT_Trigger",
-            "conversion": "",
-            "incremental": false,
-            "timeout": 0,
-            "history": {
-                "store": false,
-                "duplicate": false,
-                "max": 0,
-                "expire": 0,
-                "round_value": 0
-            }
-        }
-    }
+    "xpl_commands": {},
+    "xpl_stats": {},
+    "sensors": {}
 }
