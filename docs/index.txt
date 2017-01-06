@@ -7,5 +7,4 @@ Table Of Content
 .. toctree::
 
     /sonos
-    /dev
     /changelog
