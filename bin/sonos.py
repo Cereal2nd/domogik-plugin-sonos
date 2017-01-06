@@ -27,7 +27,15 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 
 from domogik.common.plugin import Plugin
 from soco import SoCo, discover
-import traceback
+from soco.events import event_listener
+from soco.exceptions import DIDLMetadataError
+from threading import Thread
+from pprint import pprint
+try:
+    from queue import Empty
+except:  # Py2.7
+    from Queue import Empty
+
 
 class Sonos(Plugin):
     '''
@@ -40,10 +48,63 @@ class Sonos(Plugin):
             return
         self.devices = self.get_device_list(quit_if_no_device = True)
         self._soco_to_dev = {}
+        self._sub_to_dev = {}
+        self._dev_to_sensor = {}
         self._map_device_to_soco()
-    
+
+        self.add_stop_cb(self._unregister_all)
+        # start a subscriber thread
+        self.subThread = Thread(name="Event", target=self._subEvents)
+        self.subThread.start()
+        self.register_thread(self.subThread)
+
         # notify ready
         self.ready()
+
+    def _subEvents(self):
+        while not self.should_stop():
+            for did, subs in self._sub_to_dev.items():
+                for sub in subs:
+                    try:
+                        event = sub.events.get(timeout=0.5)
+                    except Empty:
+                        pass
+                    else:
+                        self._parse_renderControl(did, event)
+
+    def _parse_renderControl(self, did, event):
+        print "+++++++++++++++"
+        sens = self._dev_to_sensor[did]
+        print sens
+        data = {}
+        #pprint(event.variables)
+        if 'bass' in event.variables and 'Bass' in sens:
+            data[sens['Bass']] = event.variables['bass']
+        if 'treble' in event.variables and 'Treble' in sens:
+            data[sens['Treble']] = event.variables['treble']
+        if 'loudness' in event.variables and 'Master' in event.variables['loudness'] and 'Loudness' in sens:
+            data[sens['Loudness']] = event.variables['loudness']['Master']
+        if 'volume' in event.variables and 'Master' in event.variables['volume'] and 'Volume' in sens:
+            data[sens['Volume']] = event.variables['volume']['Master']
+        if 'transport_state' in event.variables:
+            print("{1} STATE {0}".format(event.variables['transport_state'], did))
+        if 'current_track_duration' in event.variables:
+            print("{1} DURATION {0}".format(event.variables['current_track_duration'], did))
+        if 'current_track_meta_data' in event.variables and type(event.current_track_meta_data) is not str:
+            cur = event.current_track_meta_data
+            print("{1} TITLE {0}".format(cur.title, did)) 
+            #print("{1} ALBUM {0}".format(cur.album, did)) 
+            #print("{1} CREATOR {0}".format(cur.creator, did)) 
+        if 'next_track_meta_data' in event.variables and type(event.next_track_meta_data) is not str:
+            cur = event.next_track_meta_data
+            print("{1} NEXT TITLE {0}".format(cur.title, did)) 
+            #print("{1} NEXT ALBUM {0}".format(cur.album, did)) 
+            #print("{1} NEXT CREATOR {0}".format(cur.creator, did)) 
+        if 'play_mode' in event.variables:
+            print("{1} PLAY MODE {0}".format(event.variables['play_mode'], did))
+        print data
+        self._pub.send_event('client.sensor', data)
+        print "+++++++++++++++"
 
     def _map_device_to_soco(self):
         found = discover()
@@ -51,13 +112,28 @@ class Sonos(Plugin):
             for fnd in found.copy():
                 if 'device' in dev['parameters'] and \
                     fnd.player_name == dev['parameters']['device']['value']:
+                    # create a list
                     self._soco_to_dev[dev['id']] = fnd
+                    # build a sensorlist
+                    self._dev_to_sensor[dev['id']] = {}
+                    for (senid, sen)  in dev['sensors'].items():
+                        self._dev_to_sensor[dev['id']][sen['name']] = sen['id']
+                    # subscribe to events
+                    self._sub_to_dev[dev['id']] = []
+                    self._sub_to_dev[dev['id']].append(fnd.renderingControl.subscribe())
+                    self._sub_to_dev[dev['id']].append(fnd.avTransport.subscribe())
                     found.remove(fnd)
                 else:
                     print "Device does not have an soco device"
         if len(found) != 0:
             print "Not all sonos devices mapped"
             print "Trigger a device_detected message"
+
+    def _unregister_all(self):
+        for (id, subs) in self._sub_to_dev.items():
+            for sub in subs:
+                sub.unsubscribe()
+        event_listener.stop()
 
     def on_mdp_request(self, msg):
         Plugin.on_mdp_request(self, msg)

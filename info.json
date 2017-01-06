@@ -5,8 +5,8 @@
             "id": "sonos.player",
             "description": "Sonos Player",
             "name": "Player",
-            "commands": ["play", "stop", "mute", "volup", "voldown"],
-            "sensors": [],
+            "commands": ["play", "stop", "mute", "volup", "voldown", "next", "previous"],
+            "sensors": ["bass", "volume", "treble", "loudness"],
             "parameters": [
                 {
                     "key": "device",
@@ -121,5 +121,62 @@
     },
     "xpl_commands": {},
     "xpl_stats": {},
-    "sensors": {}
+    "sensors": {
+        "volume": {
+            "name": "Volume",
+            "data_type": "DT_Scaling",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+	    }
+        },
+        "bass": {
+            "name": "Bass",
+            "data_type": "DT_Scaling",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+	    }
+        },
+        "treble": {
+            "name": "Treble",
+            "data_type": "DT_Scaling",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+	    }
+        },
+        "loudness": {
+            "name": "Loudness",
+            "data_type": "DT_Enable",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        }
+    }
 }
