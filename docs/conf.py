@@ -17,8 +17,8 @@ source_suffix = '.txt'
 master_doc = 'index'
 
 # General information about the project.
-project = u'domogik-plugin-bluez'
-copyright = u'2015, Cereal, S. Gallet'
+project = u'domogik-plugin-sonos'
+copyright = u'2017, Cereal'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -45,5 +45,5 @@ html_theme = 'default'
 html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'domogik-plugin-bluez'
+htmlhelp_basename = 'domogik-plugin-sonos'
 

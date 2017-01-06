@@ -6,6 +6,6 @@ Table Of Content
 
 .. toctree::
 
-    /bluez
+    /sonos
     /dev
     /changelog

@@ -1,0 +1,48 @@
+.. _index:
+
+=============
+Plugin Sonos
+=============
+
+Purpose
+=======
+
+The Sonos plugin is used to control the Sonos devices from a Domogik server.
+
+Dependencies
+============
+
+You need to install the **SoCo** library: ::
+
+    $ sudo pip install soco
+
+
+Plugin configuration
+====================
+
+Almost no config is needed. The only option there is to descide if the plugin needs to start at Domogik startup.
+
+Create the domogik devices
+==========================
+
+Domogik device type : sonos.player
+---------------------------------
+
+1 parameter is needed for a domogik device creation:
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+device                string                      The name of your sonos player (Case sensitive)
+===================== =========================== ======================================================================
+
+Start the plugin
+================
+
+You can now start the plugin (start button) and use the created domogik devices.
+
+Set up your widgets on the user interface
+=========================================
+
+You can now place the widgets of your devices features on the user interface.
+
