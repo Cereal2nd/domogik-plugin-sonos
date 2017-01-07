@@ -29,6 +29,7 @@ from domogik.common.plugin import Plugin
 from soco import SoCo, discover
 from soco.events import event_listener
 from soco.exceptions import DIDLMetadataError
+from soco.data_structures import DidlItem, DidlMusicTrack 
 from threading import Thread
 from pprint import pprint
 try:
@@ -75,7 +76,7 @@ class Sonos(Plugin):
     def _parse_renderControl(self, did, event):
         print "+++++++++++++++"
         sens = self._dev_to_sensor[did]
-        print sens
+        #print sens
         data = {}
         #pprint(event.variables)
         if 'bass' in event.variables and 'Bass' in sens:
@@ -87,27 +88,46 @@ class Sonos(Plugin):
         if 'volume' in event.variables and 'Master' in event.variables['volume'] and 'Volume' in sens:
             data[sens['Volume']] = event.variables['volume']['Master']
         if 'transport_state' in event.variables:
-            print("{1} STATE {0}".format(event.variables['transport_state'], did))
-        if 'current_track_duration' in event.variables:
-            print("{1} DURATION {0}".format(event.variables['current_track_duration'], did))
-        if 'current_track_meta_data' in event.variables and type(event.current_track_meta_data) is not str:
-            cur = event.current_track_meta_data
-            print("{1} TITLE {0}".format(cur.title, did)) 
-            #print("{1} ALBUM {0}".format(cur.album, did)) 
-            #print("{1} CREATOR {0}".format(cur.creator, did)) 
-        if 'next_track_meta_data' in event.variables and type(event.next_track_meta_data) is not str:
-            cur = event.next_track_meta_data
-            print("{1} NEXT TITLE {0}".format(cur.title, did)) 
-            #print("{1} NEXT ALBUM {0}".format(cur.album, did)) 
-            #print("{1} NEXT CREATOR {0}".format(cur.creator, did)) 
-        if 'play_mode' in event.variables:
-            print("{1} PLAY MODE {0}".format(event.variables['play_mode'], did))
+            if 'State' in sens:
+                data[sens['State']] = event.variables['transport_state']
+            if event.variables['transport_state'] == 'PLAYING':
+                # These are only usefull if we are playing
+                if 'current_track_duration' in event.variables and 'Current Duration' in sens:
+                    data[sens['Current Duration']] = event.variables['current_track_duration']
+                if 'current_track_meta_data' in event.variables and type(event.current_track_meta_data) is not str:
+                    cur = event.current_track_meta_data
+                    # title, album, creator, radio_show, stream_content
+                    if 'Current Title' in sens:
+                        data[sens['Current Title']] = cur.title
+                    if type(cur) is DidlItem:
+                        if 'Current Stream' in sens:
+                            data[sens['Current Stream']] = cur.stream_content
+                        if 'Current Radio Show' in sens:
+                            data[sens['Current Radio Show']] = cur.radio_show
+                        if 'Current Albun' in sens:
+                            data[sens['Current Album']] = ''
+                        if 'Current Creator' in sens:
+                            data[sens['Current Creator']] = ''
+                    elif type(cur) is DidlMusicTrack:
+                        if 'Current Stream' in sens:
+                            data[sens['Current Stream']] = ''
+                        if 'Current Radio Show' in sens:
+                            data[sens['Current Radio Show']] = ''
+                        if 'Current Albun' in sens:
+                            data[sens['Current Album']] = cur.album
+                        if 'Current Creator' in sens:
+                            data[sens['Current Creator']] = cur.creator
+                if 'play_mode' in event.variables and 'Play Mode' in sens:
+                    data[sens['Play Mode']] = event.variables['play_mode']
         print data
         self._pub.send_event('client.sensor', data)
         print "+++++++++++++++"
 
     def _map_device_to_soco(self):
         found = discover()
+        if found is None:
+            print "No sonos devices found"
+            self.force_leave()
         for dev in self.devices:
             for fnd in found.copy():
                 if 'device' in dev['parameters'] and \

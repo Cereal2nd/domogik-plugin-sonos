@@ -6,7 +6,7 @@
             "description": "Sonos Player",
             "name": "Player",
             "commands": ["play", "stop", "mute", "volup", "voldown", "next", "previous"],
-            "sensors": ["bass", "volume", "treble", "loudness"],
+            "sensors": ["bass", "volume", "treble", "loudness", "state", "play_mode", "current_title", "current_stream", "current_radio_show", "current_album", "current_creator", "current_duration"],
             "parameters": [
                 {
                     "key": "device",
@@ -25,8 +25,8 @@
         "description": "Sonos interface",
         "domogik_min_version": "0.4.1",
         "type": "plugin",
-        "version": "1.0",
-        "tags": ["media", "music", "radio"]
+        "version": "1.1",
+        "tags": ["media", "music", "radio", "sonos"]
     },
     "json_version": 2,
     "commands": {
@@ -124,7 +124,7 @@
     "sensors": {
         "volume": {
             "name": "Volume",
-            "data_type": "DT_Scaling",
+            "data_type": "DT_Number",
             "conversion": "",
             "incremental": false,
             "timeout": 0,
@@ -138,7 +138,7 @@
         },
         "bass": {
             "name": "Bass",
-            "data_type": "DT_Scaling",
+            "data_type": "DT_Number",
             "conversion": "",
             "incremental": false,
             "timeout": 0,
@@ -152,7 +152,7 @@
         },
         "treble": {
             "name": "Treble",
-            "data_type": "DT_Scaling",
+            "data_type": "DT_Number",
             "conversion": "",
             "incremental": false,
             "timeout": 0,
@@ -177,6 +177,120 @@
                 "expire": 0,
                 "round_value": 0
             }
+        },
+        "state": {
+            "name": "State",
+            "data_type": "DT_String",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "play_mode": {
+            "name": "Play Mode",
+            "data_type": "DT_String",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "current_title": {
+            "name": "Current Title",
+            "data_type": "DT_String",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "current_album": {
+            "name": "Current Album",
+            "data_type": "DT_String",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "current_creator": {
+            "name": "Current Creator",
+            "data_type": "DT_String",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "current_stream": {
+            "name": "Current Stream",
+            "data_type": "DT_String",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "current_radio_show": {
+            "name": "Current Radio Show",
+            "data_type": "DT_String",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+
+        },
+        "current_duration": {
+            "name": "Current Duration",
+            "data_type": "DT_Time",
+            "conversion": "",
+            "incremental": false,
+            "timeout": 0,
+            "history": {
+                "store": true,
+                "duplicate": false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+
         }
     }
 }
