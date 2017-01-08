@@ -26,6 +26,7 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 """
 
 from domogik.common.plugin import Plugin
+from domogikmq.message import MQMessage
 from soco import SoCo, discover
 from soco.events import event_listener
 from soco.exceptions import DIDLMetadataError
@@ -51,6 +52,7 @@ class Sonos(Plugin):
         self._soco_to_dev = {}
         self._sub_to_dev = {}
         self._dev_to_sensor = {}
+        self._cmd_to_dev = {}
         self._map_device_to_soco()
 
         self.add_stop_cb(self._unregister_all)
@@ -74,7 +76,6 @@ class Sonos(Plugin):
                         self._parse_renderControl(did, event)
 
     def _parse_renderControl(self, did, event):
-        print "+++++++++++++++"
         sens = self._dev_to_sensor[did]
         #print sens
         data = {}
@@ -119,9 +120,7 @@ class Sonos(Plugin):
                             data[sens['Current Creator']] = cur.creator
                 if 'play_mode' in event.variables and 'Play Mode' in sens:
                     data[sens['Play Mode']] = event.variables['play_mode']
-        print data
         self._pub.send_event('client.sensor', data)
-        print "+++++++++++++++"
 
     def _map_device_to_soco(self):
         found = discover()
@@ -138,6 +137,8 @@ class Sonos(Plugin):
                     self._dev_to_sensor[dev['id']] = {}
                     for (senid, sen)  in dev['sensors'].items():
                         self._dev_to_sensor[dev['id']][sen['name']] = sen['id']
+                    for (cmdid, cmd) in dev['commands'].items():
+                        self._cmd_to_dev[cmd['id']] = cmdid
                     # subscribe to events
                     self._sub_to_dev[dev['id']] = []
                     self._sub_to_dev[dev['id']].append(fnd.renderingControl.subscribe())
@@ -159,9 +160,9 @@ class Sonos(Plugin):
         Plugin.on_mdp_request(self, msg)
         if msg.get_action() == "client.cmd":
             data = msg.get_data()
-	    if 'cmd' in data and 'dev' in data:
-		typ = data['cmd']
-		dev = self._soco_to_dev[data['dev']]
+	    if 'command_id' in data and 'device_id' in data:
+		typ = self._cmd_to_dev[data['command_id']]
+		dev = self._soco_to_dev[data['device_id']]
 		if typ == "mute":
 		    dev.mute()
 		elif typ == "play":
